@@ -1,6 +1,6 @@
 # Event: animate plot
 observeEvent(input$animate_button, {
-  req(nrow(reactive_plot_data$df) != 0)
+  req(nrow(reactive_plot_data$df) != 0 || nrow(reactive_man_data$df) != 0)
   req(isolate(input$animated_trials))
   
   # check data size
@@ -31,7 +31,7 @@ doAnimate <- function() {
   x_parameter <- parameters[1]
   y_parameter <- parameters[2]
   animation_data <- geom_point(data = df_animated, aes_string(x = x_parameter, y = y_parameter, group = "ID", colour = "DS_Name"), size = 4, shape = 19)
-  
+
   # combine both
   gg_animation <- gg +
     animation_data +

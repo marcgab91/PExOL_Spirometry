@@ -64,6 +64,10 @@ observe({
     updatePickerInput(session, "animated_trials", choices = " ")
     updateSelectInput(session, "starting_trial", choices = " ")
   }
+  if ((nrow(reactive_plot_data$df) == 0) && nrow(reactive_man_data$df) != 0) {
+    trial <- c(setNames("man_data_0", "Manipulated data - 0"))
+    updatePickerInput(session, "animated_trials", choices = trial)
+  }
 })
 
 # Event: new manipulated trial created

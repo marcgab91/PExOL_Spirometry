@@ -25,14 +25,6 @@ generatePlot <- function() {
     char_data <- geom_point(data = reactive_char_data$plot, aes_string(x = x_parameter, y = y_parameter, group = "ID", colour = "DS_Name"), size = 3.5, shape = 19)
   }
   
-  # show manipulation data
-  man_data <- NULL
-  man_data_temp <- NULL
-  if (nrow(reactive_man_data$df) != 0) {
-    man_data <- geom_path(data = reactive_man_data$df, aes_string(x = x_parameter, y = y_parameter, group = "ID", colour = "DS_Name"), linewidth = 0.9)
-    man_data_temp <- geom_path(data = reactive_man_data$temp, aes_string(x = x_parameter, y = y_parameter, group = "ID", colour = "DS_Name"), linewidth = 0.9)
-  }
-  
   # show manipulation zone points
   man_zone_data <- NULL
   if (input$man_zone_switch == TRUE) {
@@ -41,12 +33,23 @@ generatePlot <- function() {
     }
   }
   
+  # prepare plot data
+  man_data <- NULL
+  if (nrow(reactive_man_data$df) != 0) {
+    man_data <- reactive_man_data$df
+    man_data$ID <- "y_man_data_0"
+  }
+  man_data_temp <- NULL
+  if (nrow(reactive_man_data$temp) != 0) {
+    man_data_temp <- reactive_man_data$temp
+    man_data_temp$ID <- "x_man_data_0_temp"
+  }
+  plot_data <- rbind(reactive_plot_data$df, man_data_temp, man_data)
+  
   # plotting
-  gg <- ggplot(reactive_plot_data$df, aes_string(x = x_parameter, y = y_parameter, group = "ID", colour = "DS_Name")) +
+  gg <- ggplot(plot_data, aes_string(x = x_parameter, y = y_parameter, group = "ID", colour = "DS_Name")) +
     all_ref_data +
     geom_path(linewidth = 0.9) +
-    man_data_temp +
-    man_data +
     char_data +
     man_zone_data +
     xlab(x_label) +
